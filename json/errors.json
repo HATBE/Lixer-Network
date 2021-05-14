@@ -1,0 +1,14 @@
+{
+    "401": {
+        "text": "401 Unauthorized",
+        "type": "http"
+    },
+    "403": {
+        "text": "403 Forbidden",
+        "type": "http"
+    },
+    "404": {
+        "text": "404 Not Found",
+        "type": "http"
+    }
+}

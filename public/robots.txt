@@ -1,0 +1,3 @@
+ User-agent: *
+ Disallow: /index/impressum/
+ Disallow: /index/contact/
