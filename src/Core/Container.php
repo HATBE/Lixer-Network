@@ -25,7 +25,7 @@
             $this->receipts = [
                 'indexController' => function() {
                     return new IndexController($this);
-                }
+                },
                 'router' => function() {
                     return new Router($this);
                 },
