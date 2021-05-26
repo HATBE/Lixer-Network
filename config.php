@@ -1,9 +1,9 @@
 <?php 
     $config = array (
-        'version' => '1.0',
+        'version' => '1.0.0',
         'since' => 2021,
-        'page_title' => 'Lixer',
-        'page_domain' => 'lixer.com',
+        'page_title' => 'lixer',
+        'page_domain' => 'lixer.hatbe.ch',
         'author' => 'hatbe',
         'keywords' => '',
         'maintenance' => true,

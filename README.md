@@ -1,2 +1,0 @@
-# Lixer
-Social Network

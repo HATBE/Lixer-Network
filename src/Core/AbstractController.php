@@ -28,7 +28,7 @@
 
     public function index() {
       // Default Message if no Index Method is defined
-      echo "<h1><b>Nothing to see here.</b></h1><br>If you think this is incorrect, please contact the webmaster (webmaster@lixer.com).".(isset($_SERVER['PATH_INFO']) ? '<br> Error occurred while calling "'.e($_SERVER['PATH_INFO']).'"' : '');
+      echo "<h1><b>Nothing to see here.</b></h1><br>If you think this is incorrect, please contact the webmaster (webmaster@hatbe.ch).".(isset($_SERVER['PATH_INFO']) ? '<br> Error occurred while calling "'.e($_SERVER['PATH_INFO']).'"' : '');
     }
 
   }

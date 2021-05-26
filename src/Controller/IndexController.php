@@ -7,6 +7,5 @@
         
         public function index() {
             $this->render("Index/index", ['config' => $this->config]);
-        }
-        
+        }       
     }

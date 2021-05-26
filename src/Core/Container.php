@@ -7,12 +7,19 @@
     use App\Utility\Maintenance;
 
     // Services
-
+    use App\Service\UsersService;
+    use App\Service\ArticlesService;
 
     // Controller
+    use App\Controller\ErrorsController;
     use App\Controller\IndexController;
+    use App\Controller\UsersController;
+    use App\Controller\ArticlesController;
+    use App\Controller\MeController;
 
     // Repositorys
+    use App\Repository\ArticlesRepository;
+    use App\Repository\UsersRepository;
 
     class Container {
         

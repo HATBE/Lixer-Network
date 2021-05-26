@@ -13,7 +13,8 @@
                     header("Refresh:0");
                 }
             }
-            $router->makeRoute("index/maintenance");
+            echo 'Maintenance';
+            //$router->makeRoute("index/maintenance");
             die();
         }
     } else {
