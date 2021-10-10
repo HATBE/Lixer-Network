@@ -1,9 +1,0 @@
-{
-    "index": {
-      "index": {
-        "params": false,
-        "controller": "indexController",
-        "method": "index"
-      }
-    }
-}
