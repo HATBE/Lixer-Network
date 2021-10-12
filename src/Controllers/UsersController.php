@@ -13,11 +13,15 @@
             $this->userModel = new UserModel();
         }
 
-        public function index($id) {
-            $this->profile($id);
+        public function index() {
+            $this->users();
         }
 
-        public function profile($id) {
+        public function users() {
+            $this->render('users/users');
+        }
+
+        public function profile($id, $tab = 'data') {
             if($id == null && $this->user != null) {
                 $id = $this->user->getId();
             }
@@ -31,9 +35,21 @@
                 $user = new User($user->id);
             }
 
+            $tabs = array(
+                'posts',
+                'about',
+                'friends'
+            );
+            if(!in_array($tab, $tabs)) {
+                $tab = 'posts';
+            }
+
             $data = array(
                 'noUser' => false,
-                'username' => $user->getUsername()
+                'id' => $id,
+                'tab' => $tab,
+                'tabs' => $tabs,
+                'user' => $user
             );
 
             $this->render('users/profile', $data);

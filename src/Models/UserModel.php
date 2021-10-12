@@ -5,10 +5,10 @@
 
     class UserModel extends Model {
         public function usersCount() {
-            $this->db->query('SELECT COUNT(*) FROM users;');
+            $this->db->query('SELECT COUNT(*) as count FROM users;');
             $row = $this->db->single();
 
-            return $row;
+            return $row->count;
         }
         public function existsByUsername($username) {
             $this->db->query('SELECT id FROM users WHERE username LIKE :username;');
@@ -44,5 +44,19 @@
             $row = $this->db->single();
 
             return $row->id;
+        }
+        public function getFriends($uid) {
+            $this->db->query('SELECT * FROM friendships WHERE (requester LIKE :uid OR target LIKE :uid) AND accepted LIKE 1;');
+            $this->db->bind(':uid', $uid);
+            $results = $this->db->resultSet();
+
+            return $this->db->rowCount() > 0 ? $results : null;
+        }
+        public function friendsCount($uid) {
+            $this->db->query('SELECT COUNT(*) as count FROM friendships WHERE (requester LIKE :uid OR target LIKE :uid) AND accepted LIKE 1;');
+            $this->db->bind(':uid', $uid);
+            $row = $this->db->single();
+
+            return $row->count;
         }
     }
