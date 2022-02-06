@@ -1,7 +1,9 @@
 <?php
+    namespace app;
+
     spl_autoload_register(function($class) {
-        $prefix = 'App\\';
-        $baseDir = __DIR__ . '/';
+        $prefix = 'app\\';
+        $baseDir = __DIR__ . '/classes/';
 
         $len = strlen($prefix);
         if(strncmp($prefix, $class, $len) !== 0) {

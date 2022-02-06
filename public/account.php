@@ -4,10 +4,10 @@
     use app\Template;
 ?>
 
-<?= Template::load('header', ['title' => 'Home', 'selected' => 'index', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Account', 'selected' => 'account', 'keywords' => '', 'description' => 'init']);?>
 
     <section class="container">
-        Hello, i am 1 website
+        Account
     </section>
 
 <?= Template::load('footer');?>

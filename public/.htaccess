@@ -1,7 +1,26 @@
+# Error docs
+ErrorDocument 400 /lixer/public/errors/error.php?n=400
+ErrorDocument 401 /lixer/public/errors/error.php?n=401
+ErrorDocument 403 /lixer/public/errors/error.php?n=403
+ErrorDocument 404 /lixer/public/errors/error.php?n=404
+ErrorDocument 500 /lixer/public/errors/error.php?n=500
+
+# Disallow Indexing
+Options -Indexes
+IndexIgnore *
+
+# Disallow accessing .htaccess / server-status
+<FilesMatch "^(\.htaccess|server-status|error)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+
+    # rewrite .php and "/" to param
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*) %{REQUEST_FILENAME}.php/$1 [QSA,L]
 </IfModule>
