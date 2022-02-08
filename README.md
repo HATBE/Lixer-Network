@@ -1,13 +1,13 @@
 A random social network...
 
 - LAMP
- - PHP
- - JS
- - MySQL
- - CSS
- - HTML
+   - PHP
+   - JS
+   - MySQL
+   - CSS
+   - HTML
  
 - Feautures
- - users
- - Posts
- - ...
+   - users
+   - Posts
+   - ...
