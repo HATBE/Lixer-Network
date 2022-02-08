@@ -33,7 +33,7 @@
                 <div class="text-center mt-3 d-flex flex-column justify-content-center">
                     <span>Don't have an account?</span>
                     <a class="w-100" href="<?= ROOT_PATH;?>register">
-                        <button class="text-decoration-none btn btn-link border-2 border-primary my-2 fw-bold btn-sm text-primary w-100" type="button">CREATE ONE</button>
+                        <button class="text-decoration-none btn btn-outline-primary my-2 fw-bold btn-sm w-100" type="button">CREATE ONE</button>
                     </a>
                 </div>
             </div>

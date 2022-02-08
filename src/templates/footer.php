@@ -6,7 +6,7 @@
                     &copy; 2022 - <a class="link-light text-decoration-none" href="https://hatbe.ch">HATBE</a>
                 </div>
                 <div>
-                    <small>
+                    <small class="user-select-none">
                         <a class="link-light" href="<?= ROOT_PATH;?>imprint">Imprint</a>
                     </small> 
                 </div>

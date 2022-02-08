@@ -10,6 +10,7 @@
     require_once(__DIR__ . '/autoload.php');
 
     use app\Database;
+    use app\users\User;
 
     $db = new Database();
 
@@ -21,4 +22,12 @@
         $url = explode('/', $url);
         if(!str_contains(explode('/', substr(rtrim($_SERVER['REQUEST_URI']), 1))[0], '.php')) array_shift($url);
         if(empty($url) || $url[0] == '') $url = '';
+    }
+
+    User::updateLastActivity($db);
+    
+    if(User::isLoggedIn()) {
+        $loggedInUser = new User($db, USER::getLoggedInId());
+    } else {
+        $loggedInUser = null;
     }

@@ -32,11 +32,44 @@ body {
     border-color: var(--bs-primary) !important;
     color: var(--bs-primary) !important;
 }
+.btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--bs-primary);
+}
+
+.bg-dark-primary {
+  background-color: #0b3961;
+}
 
 @media only screen and (max-width: 768px) {
     .md-none {
         display: none !important;
     }
+}
+
+.hover-light:hover {
+  background-color: #dbdbdb;
+  transition-duration: .2s;
+}
+.hover-text-light:hover {
+  color: #dbdbdb;
+  transition-duration: .2s; 
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+.cursor-default {
+  cursor: default;
+}
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+.cursor-none {
+  cursor: none;
+}
+.cursor-text {
+  cursor: text;
 }
 
 /* --- GLITCH start ---*/

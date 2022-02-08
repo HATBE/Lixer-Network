@@ -31,26 +31,20 @@
     </head>
     <body class="bg-primary">
         <?php if(!isset($noparts)):?>
-        <header class="bg-primary text-light p-3">
+        <header class="user-select-none bg-primary text-light p-3">
             <div class="container d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 p-0 m-0">
-                        <a class="link-light text-decoration-none" href="<?= ROOT_PATH;?>">
+                        <a  class=" link-light text-decoration-none" href="<?= ROOT_PATH;?>">
                             <?= PAGE_TITLE;?>
                         </a>
                     </h1>
                 </div>
-                <div class="w-50">
-                    <form action="<?= ROOT_PATH;?>search" method="GET" class="input-group">
-                        <input type="search" class="form-control" placeholder="Search...">
-                        <button type="submit" class="btn btn-outline-light">Search</button>
-                    </form>
-                </div>
                 <div>
-                    <?= Template::load('buttons/loginLogoutBtns');?>
+                    <?= Template::load('buttons/headerButtonSection');?>
                 </div>
             </div>
         </header>
-        <main class="bg-light py-4 px-3">
+        <main id="main-content" class="bg-light py-4 px-3">
         <?php endif;?>
         

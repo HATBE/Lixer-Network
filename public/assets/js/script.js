@@ -1,3 +1,13 @@
+/*
+CHECK IF CAPS
+document.addEventListener('keyup', (e) => {
+    if (e.getModifierState('CapsLock')) {
+        console.log("Caps Lock is on");
+    } else {
+        console.log("Caps Lock is off");
+    }
+});*/
+
 const rootPath = "/lixer/public/";
 
 function addMessageToAlert(alertName, messages, cclass = 'danger') {
@@ -12,6 +22,18 @@ function addMessageToAlert(alertName, messages, cclass = 'danger') {
     } else {
         console.log('Alert box not found!');
     }
+}
+
+function followUser(userid) {
+    alert(`Follow ${userid}`);
+}
+
+function blockUser(userid, refresh = false) {
+    alert(`Block ${userid}`);
+}
+
+function openChat(userid) {
+    alert(`chat with ${userid}`);
 }
 
 // LOGIN START
