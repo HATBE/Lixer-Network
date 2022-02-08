@@ -26,26 +26,26 @@
             <?php if($user->exists()): ?>
                 <div class="row">
                     <div class="col-12 col-md-4 col-sm-10 offset-md-0 offset-sm-1">
-                        <?= Template::load('userCard', ['user' => $user]);?>
+                        <?= Template::load('userCard', ['user' => $user, 'loggedInUser' => $loggedInUser]);?>
                     </div>
                     <div class="col-12 col-md-8 col-sm-10 offset-md-0 offset-sm-1">
                         <div class="card">
-                            <div class="user-select-none card-header bg-primary text-light">
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item">
-                                        <a class="nav-link <?= $card == 'profile' ? 'active' : ''?> link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/profile">Profile</a>
+                            <div class="d-flex user-select-none card-header bg-primary text-light">
+                                <ul class="nav">
+                                    <li class="nav-item rounded <?= $card == 'profile' ? 'bg-dark-primary' : ''?>">
+                                        <a class="nav-link hover-text-light link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/profile">Profile</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link <?= $card == 'posts' ? 'active' : ''?> link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/posts">Posts</a>
+                                    <li class="nav-item rounded <?= $card == 'posts' ? 'bg-dark-primary' : ''?> ">
+                                        <a class="nav-link hover-text-light link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/posts">Posts</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link <?= $card == 'other' ? 'active' : ''?> link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/other">Other</a>
+                                    <li class="nav-item rounded <?= $card == 'other' ? 'bg-dark-primary' : ''?>">
+                                        <a class="nav-link hover-text-light link-light" href="<?= ROOT_PATH?>users/<?=$user->getId();?>/other">Other</a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="card-body">
                                 <?php if($card == 'profile'):?>
-
+                                    Welcome, this is my profile
                                 <?php elseif($card == 'posts'):?>
                                     posts
                                 <?php else:?>

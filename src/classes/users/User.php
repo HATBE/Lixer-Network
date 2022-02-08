@@ -26,6 +26,13 @@
             return isset($_SESSION['loggedIn']) ? $_SESSION['loggedIn'] : null;
         }
 
+        public static function existsId($db, $id) {
+            $db->query('SELECT id FROM users WHERE id LIKE :id;');
+            $db->bind('id', $id);
+            $db->single();
+            return $db->rowCount() >= 1;
+        }
+
         public static function updateLastActivity(Database $db) {
             if(User::isLoggedIn()) {
                 $userid = User::getLoggedInId();
@@ -48,6 +55,23 @@
                     $db->execute();
                 }
             }
+        }
+
+        public static function follow(Database $db, $sid, $tid) {
+            $time = time();
+            $db->query('INSERT INTO following (source_user_id, target_user_id, time) VALUES (:sid, :tid, :time);');
+            $db->bind('sid', $sid);
+            $db->bind('tid', $tid);
+            $db->bind('time', $time);
+            $db->execute();
+        }
+        
+        public static function unfollow(Database $db, $sid, $tid) {
+            $time = time();
+            $db->query('DELETE FROM following WHERE source_user_id LIKE :sid AND target_user_id LIKE :tid;');
+            $db->bind('sid', $sid);
+            $db->bind('tid', $tid);
+            $db->execute();
         }
 
         public function __construct(Database $db, $input) {
@@ -149,4 +173,67 @@
                 return ['name' => 'Online', 'color' => '#66ff66'];
             }
         }
+
+        public function getFollowers() {
+            $id = $this->getId();
+            $this->_db->query('SELECT * FROM following WHERE target_user_id LIKE :id;');
+            $this->_db->bind('id', $id);
+            $res = $this->_db->resultSet();
+
+            $users = [];
+            foreach($res as $user) {
+                array_push($users, new User($this->_db, $user->source_user_id));
+            }
+            return $users;
+        }
+
+        public function getFollowersCount() {
+            $id = $this->getId();
+            $this->_db->query('SELECT COUNT(id) c FROM following WHERE target_user_id LIKE :id;');
+            $this->_db->bind('id', $id);
+            $res = $this->_db->single();
+            return $res->c;
+        }
+
+        public function getFollowing() {
+            $id = $this->getId();
+            $this->_db->query('SELECT * FROM following WHERE source_user_id LIKE :id;');
+            $this->_db->bind('id', $id);
+            $res = $this->_db->resultSet();
+
+            $users = [];
+            foreach($res as $user) {
+                array_push($users, new User($this->_db, $user->target_user_id));
+            }
+            return $users;
+        }
+
+        public function getFollowingCount() {
+            $id = $this->getId();
+            $this->_db->query('SELECT COUNT(id) c FROM following WHERE source_user_id LIKE :id;');
+            $this->_db->bind('id', $id);
+            $res = $this->_db->single();
+            return $res->c;
+        }
+
+        public function isFollowing($id) {
+            $sid = $this->getId();
+            $this->_db->query('SELECT COUNT(id) c FROM following WHERE source_user_id LIKE :source AND target_user_id LIKE :target;');
+            $this->_db->bind('source', $sid);
+            $this->_db->bind('target', $id);
+            $res = $this->_db->single();
+
+            return $res->c >= 1;
+        }
+
+        public function isFollowedBy($id) {
+            $sid = $this->getId();
+            $this->_db->query('SELECT COUNT(id) c FROM following WHERE source_user_id LIKE :source AND target_user_id LIKE :target;');
+            $this->_db->bind('source', $id);
+            $this->_db->bind('target', $sid);
+            $res = $this->_db->single();
+
+            return $res->c >= 1;
+        }
+
     }

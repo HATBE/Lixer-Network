@@ -12,7 +12,7 @@
 <?= Template::load('header', ['title' => 'Dashboard', 'selected' => 'dashboard', 'keywords' => '', 'description' => 'init']);?>
 
     <section class="container">
-        This is my dashboard
+        Chat with me
     </section>
 
 <?= Template::load('footer');?>

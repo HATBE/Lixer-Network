@@ -9,6 +9,18 @@
     </div>
 <?php else:?>
     <div class="bg-dark-primary px-2 py-1 rounded-pill d-flex mx-1">
+        <span class="dropdown">
+            <div title="Add" class="position-relative mx-1 cursor-pointer hover-text-light" id="searchmenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-plus-circle"></i>
+            </div>
+            <ul class="user-select-auto dropdown-menu">
+                <li><a class="dropdown-item" href="<?= ROOT_PATH?>create/text"><span style="display: inline-block;width: 23px;"><i class="fas fa-align-left"></i></span> Text</a></li>
+                <li><a class="dropdown-item" href="<?= ROOT_PATH?>create/video"><span style="display: inline-block;width: 23px;"><i class="fas fa-video"></i></span> Video</a></li>
+                <li><a class="dropdown-item" href="<?= ROOT_PATH?>create/image"><span style="display: inline-block;width: 23px;"><i class="fas fa-image"></i></span> Image</a></li>
+            </ul>
+        </span>
+    </div>
+    <div class="bg-dark-primary px-2 py-1 rounded-pill d-flex mx-1">
         <a title="Dashboard" class="mx-1 link-light text-decoration-none hover-text-light" href="<?= ROOT_PATH;?>dashboard"><i class="fas fa-tachometer-alt"></i></a>
         <a title="Chat" class="mx-1 link-light text-decoration-none hover-text-light" href="<?= ROOT_PATH;?>chat"><i class="fas fa-comment"></i></a>
         <span class="dropdown">

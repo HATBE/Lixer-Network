@@ -9,10 +9,10 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Dashboard', 'selected' => 'dashboard', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Report', 'selected' => 'report', 'keywords' => '', 'description' => 'init']);?>
 
     <section class="container">
-        This is my dashboard
+        Report
     </section>
 
 <?= Template::load('footer');?>

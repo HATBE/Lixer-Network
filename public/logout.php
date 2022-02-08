@@ -1,4 +1,11 @@
 <?php
-    session_start();
+    require_once(__DIR__ . '/../src/init.php');
+
+    use app\users\User;
+
+    if(!User::isLoggedIn()) {
+        header('Location: ' . ROOT_PATH);
+    }
+
     session_destroy();
-    header('Location: /login');
+    header('Location: ' . ROOT_PATH . 'login');

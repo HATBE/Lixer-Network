@@ -23,10 +23,34 @@ function addMessageToAlert(alertName, messages, cclass = 'danger') {
         console.log('Alert box not found!');
     }
 }
+/* FOLLOW START */
+const followBtns = document.querySelectorAll('#followbtn');
 
-function followUser(userid) {
-    alert(`Follow ${userid}`);
+if(followBtns) {
+    followBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            const userId = btn.getAttribute('data-user');
+            $.post(rootPath + "api/follow", {target: userId})
+            .done((data) => {
+                if(e.target.getAttribute('data-following') == 'true') {
+                    e.target.setAttribute('data-following', 'false');
+                    e.target.classList.remove('btn-danger');
+                    e.target.classList.add('btn-primary');
+                    e.target.textContent = 'Follow';
+                } else {
+                    e.target.setAttribute('data-following', 'true');
+                    e.target.classList.remove('btn-primary');
+                    e.target.classList.add('btn-danger');
+                    e.target.textContent = 'Unfollow';
+                }
+            })
+            .fail((data) => {
+                alert('failed');
+            });
+        });
+    });
 }
+/* FOLLOW END */
 
 function blockUser(userid, refresh = false) {
     alert(`Block ${userid}`);

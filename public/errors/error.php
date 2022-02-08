@@ -34,10 +34,20 @@
             filter: brightness(0.7);
             filter: grayscale(0.5);
         }
+        @media only screen and (max-width: 1200px) {
+            h1 {
+                font-size: 50px !important;
+            }
+        }
+        @media only screen and (max-width: 600px) {
+            h1 {
+                font-size: 30px !important;
+            }
+        }
     </style>
 
     <section class="container d-flex justify-content-center">
-        <div class="p-5 m-5 col-md-6">
+        <div class="p-5 m-5 d-flex justify-content-center flex-column">
             <h1 class="glitch">
                 <span aria-hidden="true">Error <?= $errorId;?></span>
                 Error <?= $errorId;?>
