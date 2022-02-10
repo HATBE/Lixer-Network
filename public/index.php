@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Home', 'selected' => 'index', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Home', 'selected' => 'index', 'keywords' => '', 'description' => 'init', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         Hello, i am 1 website

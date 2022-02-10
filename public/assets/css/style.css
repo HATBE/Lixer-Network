@@ -71,9 +71,12 @@ body {
 .cursor-text {
   cursor: text;
 }
+.fs-28 {
+  font-size: 28px;
+}
 
 /* --- GLITCH start ---*/
-.glitch {
+  .glitch {
     font-size: 5rem;
     font-weight: bold;
     text-transform: uppercase;

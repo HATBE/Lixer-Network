@@ -1,13 +1,3 @@
-/*
-CHECK IF CAPS
-document.addEventListener('keyup', (e) => {
-    if (e.getModifierState('CapsLock')) {
-        console.log("Caps Lock is on");
-    } else {
-        console.log("Caps Lock is off");
-    }
-});*/
-
 const rootPath = "/lixer/public/";
 
 function addMessageToAlert(alertName, messages, cclass = 'danger') {
@@ -23,13 +13,15 @@ function addMessageToAlert(alertName, messages, cclass = 'danger') {
         console.log('Alert box not found!');
     }
 }
-/* FOLLOW START */
+
+// FOLLOW START
 const followBtns = document.querySelectorAll('#followbtn');
 
 if(followBtns) {
     followBtns.forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const userId = btn.getAttribute('data-user');
+            e.target.textContent = '...';
             $.post(rootPath + "api/follow", {target: userId})
             .done((data) => {
                 if(e.target.getAttribute('data-following') == 'true') {
@@ -50,7 +42,7 @@ if(followBtns) {
         });
     });
 }
-/* FOLLOW END */
+// FOLLOW END
 
 function blockUser(userid, refresh = false) {
     alert(`Block ${userid}`);
@@ -85,3 +77,26 @@ function openChat(userid) {
         });
     }
 // LOGIN END
+
+// POST START
+    const createTextFormEl = document.getElementById('create-text-form');
+    const createTextAreaEl = document.getElementById('create-text-area');
+
+    if(createTextAreaEl || createTextFormEl) {
+        createTextFormEl.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const text = createTextAreaEl.value;
+
+            $.post(rootPath + "api/createText", {text: text})
+            .done((data) => {
+                addMessageToAlert('create-alert', data.messages, 'success');
+                createTextAreaEl.value = '';
+                setTimeout(() => { window.location.href = rootPath + 'content/text/' + data.data.id }, 750);
+            })
+            .fail((data) => {
+                addMessageToAlert('create-alert', JSON.parse(data.responseText).messages, 'danger');
+            });
+        });
+    }
+// POST END

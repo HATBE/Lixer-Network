@@ -25,53 +25,51 @@
         exit;
     }
 
-    if(!isset($_POST['target'])) {
+    if(!isset($_POST['text'])) {
         $response->setSuccess(false);
         $response->setHttpStatusCode(400);
-        $response->addMessage('Please provide a target!');
+        $response->addMessage('Please provide a text!');
         $response->setData(null);
         $response->send();
         exit;
     }
 
-    if(empty($_POST['target'])) {
+    if(empty($_POST['text'])) {
         $response->setSuccess(false);
         $response->setHttpStatusCode(400);
-        $response->addMessage('Please provide a target!');
+        $response->addMessage('Please provide a text!');
         $response->setData(null);
         $response->send();
         exit;
     }
 
-    $target = Sanitize::int($_POST['target']);
+    $text = Sanitize::String($_POST['text']);
 
-    if($target == $loggedInUser->getId()) {
+    if(strlen($text) >= 350 || strlen($text) <= 2) {
         $response->setSuccess(false);
         $response->setHttpStatusCode(400);
-        $response->addMessage('You cant follow yourself!');
+        $response->addMessage('Text must be between 3 and 350 chars!');
         $response->setData(null);
         $response->send();
         exit;
     }
 
-    if(!User::existsId($db, $target)) {
-        $response->setSuccess(false);
-        $response->setHttpStatusCode(404);
-        $response->addMessage('Target user dows not exist!');
-        $response->setData(null);
-        $response->send();
-        exit;
-    }
+    $id = $loggedInUser->getId();
+    $time = time();
 
-    if($loggedInUser->isFollowing($target)) {
-        User::unfollow($db, $loggedInUser->getId(), $target);
-    } else {
-        User::follow($db, $loggedInUser->getId(), $target);
-    }
+    $db->query("INSERT INTO textPosts (user_id, time, text) VALUES (:id, :time, :text);");
+    $db->bind('id', $id);
+    $db->bind('time', $time);
+    $db->bind('text', $text);
+    $db->execute();
 
-    $response->setSuccess(true);
-    $response->setHttpStatusCode(200);
-    $response->addMessage('performed successfully');
-    $response->setData(null);
+    $lastId = $db->lastId();
+
+    $data = ['id' => $lastId];
+
+    $response->setSuccess(false);
+    $response->setHttpStatusCode(201);
+    $response->addMessage('Successfully posted!');
+    $response->setData($data);
     $response->send();
     exit;

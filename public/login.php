@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Login', 'selected' => 'login', 'keywords' => '', 'description' => '']);?>
+<?= Template::load('header', ['title' => 'Login', 'selected' => 'login', 'keywords' => '', 'description' => '', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         <div class="row d-flex justify-content-center overflow-hidden">
@@ -17,13 +17,13 @@
                 <h2 class="h4 fw-bold my-4">LOGIN</h2>
                 <div class="alert d-none" id="login-alert"></div>
                 <form id="login-form">
-                    <div class="form-group mb-3">
+                    <div class="form-floating mb-3">
+                        <input class="form-control form-control-lg" id="login-username" name="username" type="text" placeholder="Username">
                         <label for="username">Username</label>
-                        <input class="form-control" id="login-username" name="username" type="text" placeholder="Username">
                     </div>
-                    <div class="form-group mb-3">
+                    <div class="form-floating mb-3">
+                        <input class="form-control form-control-lg" id="login-password" name="password" type="password" placeholder="Password">
                         <label for="password">Password</label>
-                        <input class="form-control" id="login-password" name="password" type="password" placeholder="Password">
                     </div>
                     <button class="btn btn-primary w-100" type="submit">Login</button>
                 </form>

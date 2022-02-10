@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Register', 'selected' => 'register', 'keywords' => '', 'description' => '']);?>
+<?= Template::load('header', ['title' => 'Register', 'selected' => 'register', 'keywords' => '', 'description' => '', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         Register

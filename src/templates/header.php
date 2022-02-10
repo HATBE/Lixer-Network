@@ -41,7 +41,7 @@
                     </h1>
                 </div>
                 <div>
-                    <?= Template::load('buttons/headerButtonSection');?>
+                    <?= Template::load('buttons/headerButtonSection', ['loggedInUser' => $loggedInUser]);?>
                 </div>
             </div>
         </header>

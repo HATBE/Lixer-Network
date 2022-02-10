@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Dashboard', 'selected' => 'dashboard', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Dashboard', 'selected' => 'dashboard', 'keywords' => '', 'description' => 'init', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         Chat with me

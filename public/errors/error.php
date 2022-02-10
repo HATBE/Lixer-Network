@@ -21,7 +21,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => "Error ${errorId}", 'selected' => 'error', 'keywords' => '', 'description' => '']);?>
+<?= Template::load('header', ['title' => "Error ${errorId}", 'selected' => 'error', 'keywords' => '', 'description' => '', 'loggedInUser' => $loggedInUser]);?>
 
     <style>
         main {

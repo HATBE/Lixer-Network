@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Report', 'selected' => 'report', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Report', 'selected' => 'report', 'keywords' => '', 'description' => 'init', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         Report

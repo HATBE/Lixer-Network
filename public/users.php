@@ -19,14 +19,14 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => $title, 'selected' => 'account', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => $title, 'selected' => 'account', 'keywords' => '', 'description' => 'init', 'loggedInUser' => $loggedInUser]);?>
 
     <?php if(isset($url[0])):?>
         <section class="container">
             <?php if($user->exists()): ?>
                 <div class="row">
                     <div class="col-12 col-md-4 col-sm-10 offset-md-0 offset-sm-1">
-                        <?= Template::load('userCard', ['user' => $user, 'loggedInUser' => $loggedInUser]);?>
+                        <?= Template::load('user/card', ['user' => $user, 'loggedInUser' => $loggedInUser]);?>
                     </div>
                     <div class="col-12 col-md-8 col-sm-10 offset-md-0 offset-sm-1">
                         <div class="card">

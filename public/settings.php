@@ -9,7 +9,7 @@
     }
 ?>
 
-<?= Template::load('header', ['title' => 'Settings', 'selected' => 'settings', 'keywords' => '', 'description' => 'init']);?>
+<?= Template::load('header', ['title' => 'Settings', 'selected' => 'settings', 'keywords' => '', 'description' => 'init', 'loggedInUser' => $loggedInUser]);?>
 
     <section class="container">
         Settings
