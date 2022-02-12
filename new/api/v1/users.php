@@ -5,10 +5,7 @@
     use app\DefaultResponse;
     use app\Sanitize;
     use app\users\User;
-
-    $itemsPerPage = 1;
-
-    $page = isset($_GET['page']) ? Sanitize::int($_GET['page']) : 1;
+    use app\posts\Post;
 
     if(isset($url[0])) {
         if(!Sanitize::checkInt($url[0])) {
@@ -30,26 +27,231 @@
 
         if(isset($url[1])) {
             if($url[1] === 'follow') {
-                // follow a user
                 if($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // TODO:
+                    // follow a user
+                    if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                        DefaultResponse::_401NotAuthorized();
+                    }
+        
+                    $accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
+
+                    if(!$id = User::isAuthorized($db, $accesstoken)) {
+                        DefaultResponse::_401NotAuthorized();
+                    }
+    
+                    $userFromToken = new User($db, $id);
+
+                    if($userFromToken->getId() == $user->getId()) {
+                        $response = new JsonResponse();
+                        $response->setHttpStatusCode(400);
+                        $response->setSuccess(false);
+                        $response->addMessage('You cannot follow yourself');
+                        $response->send();
+                        exit;
+                    }
+
+                    if($userFromToken->isFollowing($user)) {
+                        $response = new JsonResponse();
+                        $response->setHttpStatusCode(400);
+                        $response->setSuccess(false);
+                        $response->addMessage('You already follow this user');
+                        $response->send();
+                        exit;
+                    }
+
+                    $db->query('INSERT INTO following (source_user_id, target_user_id, time) VALUES (:source, :target, :time);');
+                    $db->bind('source', $userFromToken->getId());
+                    $db->bind('target', $user->getId());
+                    $db->bind('time', time());
+                    $db->execute();
+
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(201);
+                    $response->setSuccess(false);
+                    $response->addMessage('Followed successfully');
+                    $response->send();
+                    exit;
+                } else if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                    // unfollow a user
+                    if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+                        DefaultResponse::_401NotAuthorized();
+                    }
+        
+                    $accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
+
+                    if(!$id = User::isAuthorized($db, $accesstoken)) {
+                        DefaultResponse::_401NotAuthorized();
+                    }
+
+                    $userFromToken = new User($db, $id);
+
+                    if($userFromToken->getId() == $user->getId()) {
+                        $response = new JsonResponse();
+                        $response->setHttpStatusCode(400);
+                        $response->setSuccess(false);
+                        $response->addMessage('You cannot unfollow yourself');
+                        $response->send();
+                        exit;
+                    }
+
+                    if(!$userFromToken->isFollowing($user)) {
+                        $response = new JsonResponse();
+                        $response->setHttpStatusCode(400);
+                        $response->setSuccess(false);
+                        $response->addMessage('You are not following this user');
+                        $response->send();
+                        exit;
+                    }
+
+                    $db->query('DELETE FROM following WHERE source_user_id LIKE :source AND target_user_id LIKE :target;');
+                    $db->bind('source', $userFromToken->getId());
+                    $db->bind('target', $user->getId());
+                    $db->execute();
+
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(201);
+                    $response->setSuccess(false);
+                    $response->addMessage('Unfollowed successfully');
+                    $response->send();
+                    exit;  
                 } else {
                     DefaultResponse::_405RequestMethodNotAllowed();
                 }
-            } else if($url[1] === 'unfollow') {
-                // unfollow a user
-                if($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // TODO:
+            } else if($url[1] === 'followers') {
+                if($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    // get all follower users from a user
+                    $db->query('SELECT COUNT(id) as c FROM following WHERE target_user_id LIKE :id;');
+                    $db->bind('id', $user->getId());
+                    $usersCount = $db->single()->c;
+
+                    $maxPages = ceil($usersCount / $itemsPerPage);
+
+                    if($page > $maxPages || $page <= 0) {
+                        DefaultResponse::_404PageNotFound();
+                    }
+
+                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+        
+                    $db->query('SELECT * FROM following WHERE target_user_id LIKE :id LIMIT :limit OFFSET :offset;');
+                    $db->bind('id', $user->getId());
+                    $db->bind('limit', $itemsPerPage);
+                    $db->bind('offset', $offset);
+                    $res = $db->resultSet();
+
+                    $rData = [];
+
+                    $rData['rows_returned'] = $db->rowCount();
+                    $rData['total_rows'] = intval($usersCount);
+                    $rData['total_pages'] = $maxPages;
+                    $rData['has_next_page'] = $page >= $maxPages ? false : true;
+                    $rData['has_last_page'] = $page >= 2 ? true : false;
+
+                    foreach($res as $idx=>$user) {
+                        $userO = new User($db, $user->source_user_id);
+                        $rData['users'][$idx] = $userO->getAsArray();
+                    }
+        
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(200);
+                    $response->setSuccess(true);
+                    $response->setData($rData);
+                    $response->send();
+                    exit;
+                } else {
+                    DefaultResponse::_405RequestMethodNotAllowed();
+                }
+            } else if($url[1] === 'following') {
+                if($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    // get all following users from a user
+                    $db->query('SELECT COUNT(id) as c FROM following WHERE source_user_id LIKE :id;');
+                    $db->bind('id', $user->getId());
+                    $usersCount = $db->single()->c;
+
+                    $maxPages = ceil($usersCount / $itemsPerPage);
+
+                    if($page > $maxPages || $page <= 0) {
+                        DefaultResponse::_404PageNotFound();
+                    }
+
+                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+        
+                    $db->query('SELECT * FROM following WHERE source_user_id LIKE :id LIMIT :limit OFFSET :offset;');
+                    $db->bind('id', $user->getId());
+                    $db->bind('limit', $itemsPerPage);
+                    $db->bind('offset', $offset);
+                    $res = $db->resultSet();
+
+                    $rData = [];
+
+                    $rData['rows_returned'] = $db->rowCount();
+                    $rData['total_rows'] = intval($usersCount);
+                    $rData['total_pages'] = $maxPages;
+                    $rData['has_next_page'] = $page >= $maxPages ? false : true;
+                    $rData['has_last_page'] = $page >= 2 ? true : false;
+
+                    foreach($res as $idx=>$user) {
+                        $userO = new User($db, $user->target_user_id);
+                        $rData['users'][$idx] = $userO->getAsArray();
+                    }
+        
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(200);
+                    $response->setSuccess(true);
+                    $response->setData($rData);
+                    $response->send();
+                    exit;
+                } else {
+                    DefaultResponse::_405RequestMethodNotAllowed();
+                }
+            } else if($url[1] === 'posts') {
+                if($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    // get all posts from a user
+                    $db->query('SELECT COUNT(id) as c FROM posts WHERE user_id LIKE :id;');
+                    $db->bind('id', $user->getId());
+                    $postsCount = $db->single()->c;
+
+                    $maxPages = ceil($postsCount / $itemsPerPage);
+
+                    if($page > $maxPages || $page <= 0) {
+                        DefaultResponse::_404PageNotFound();
+                    }
+
+                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+        
+                    $db->query('SELECT * FROM posts WHERE user_id LIKE :id LIMIT :limit OFFSET :offset;');
+                    $db->bind('id', $user->getId());
+                    $db->bind('limit', $itemsPerPage);
+                    $db->bind('offset', $offset);
+                    $res = $db->resultSet();
+
+                    $rData = [];
+
+                    $rData['rows_returned'] = $db->rowCount();
+                    $rData['total_rows'] = intval($postsCount);
+                    $rData['total_pages'] = $maxPages;
+                    $rData['has_next_page'] = $page >= $maxPages ? false : true;
+                    $rData['has_last_page'] = $page >= 2 ? true : false;
+
+                    foreach($res as $idx=>$post) {
+                        $postO = new Post($db, $post->id);
+                        $rData['posts'][$idx] = $postO->getAsArray();
+                    }
+        
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(200);
+                    $response->setSuccess(true);
+                    $response->setData($rData);
+                    $response->send();
+                    exit;
                 } else {
                     DefaultResponse::_405RequestMethodNotAllowed();
                 }
             }
         } else {    
             if($_SERVER['REQUEST_METHOD'] === 'GET') {
-                // get a user
+                // get a single user
                 $rData = [];
-                $rData['user_id'] = $user->getId();
-                $rData['username'] = $user->getUsername();
+                $rData = $user->getAsArray();
     
                 $response = new JsonResponse();
                 $response->setHttpStatusCode(200);
@@ -59,15 +261,62 @@
                 exit;
             } if($_SERVER['REQUEST_METHOD'] === 'PATCH') {
                 // update a user
+
+                // TODO:
+            } else if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                // delete a user
                 if(!isset($_SERVER['HTTP_AUTHORIZATION'])) {
                     DefaultResponse::_401NotAuthorized();
                 }
     
                 $accesstoken = $_SERVER['HTTP_AUTHORIZATION'];
-    
-                // TODO:
-            } else if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-                // TODO:
+
+                if(!$id = User::isAuthorized($db, $accesstoken)) {
+                    DefaultResponse::_401NotAuthorized();
+                }
+
+                $userFromToken = new User($db, $id);
+
+                if($userFromToken->getId() !== $user->getId()) {
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(400);
+                    $response->setSuccess(false);
+                    $response->addMessage('You cannot delete this user');
+                    $response->send();
+                    exit;
+                }
+
+                $db->query('DELETE FROM sessions WHERE user_id LIKE :id;');
+                $db->bind('id', $userFromToken->getId());
+                $db->execute();
+
+                $db->query('DELETE FROM following WHERE source_user_id LIKE :id or target_user_id LIKE :id;');
+                $db->bind('id', $userFromToken->getId());
+                $db->execute();
+
+                $db->query('DELETE FROM posts WHERE user_id LIKE :id;');
+                $db->bind('id', $userFromToken->getId());
+                $db->execute();
+
+                $db->query('DELETE FROM users WHERE id LIKE :id;');
+                $db->bind('id', $userFromToken->getId());
+                $db->execute();
+
+                if($db->rowCount() <= 0) {
+                    $response = new JsonResponse();
+                    $response->setHttpStatusCode(500);
+                    $response->setSuccess(false);
+                    $response->addMessage('Error qhile deleting user');
+                    $response->send();
+                    exit;
+                }
+                
+                $response = new JsonResponse();
+                $response->setHttpStatusCode(200);
+                $response->setSuccess(false);
+                $response->addMessage('Successfully deleted user');
+                $response->send();
+                exit;
             } else {
                 DefaultResponse::_405RequestMethodNotAllowed();
             }
@@ -81,12 +330,7 @@
             $maxPages = ceil($usersCount / $itemsPerPage);
 
             if($page > $maxPages || $page <= 0) {
-                $response = new JsonResponse();
-                $response->setHttpStatusCode(404);
-                $response->setSuccess(false);
-                $response->addMessage("Page not found");
-                $response->send();
-                exit;
+                DefaultResponse::_404PageNotFound();
             }
 
             $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
@@ -99,13 +343,14 @@
             $rData = [];
 
             $rData['rows_returned'] = $db->rowCount();
-            $rData['total_rows'] = $usersCount;
+            $rData['total_rows'] = intval($usersCount);
             $rData['total_pages'] = $maxPages;
+            $rData['has_next_page'] = $page >= $maxPages ? false : true;
+            $rData['has_last_page'] = $page >= 2 ? true : false;
 
             foreach($res as $idx=>$user) {
-               $userO = new User($db, $user);
-               $rData[$idx]['user_id'] = $userO->getId();
-               $rData[$idx]['username'] = $userO->getUsername();
+               $userO = new User($db, $user->id);
+               $rData['users'][$idx] = $userO->getAsArray();
             }
 
             $response = new JsonResponse();

@@ -1,20 +1,20 @@
-✓ POST /sessions                   Login
-✓ PATCH /sessions                  Refresh a session
-✓ DELETE /sessions                 Logout
+✓ POST /sessions                    Login
+✓ PATCH /sessions                   Refresh a session
+✓ DELETE /sessions                  Logout
 
 ✓ GET /users                        Get all users
 ✓ GET /users/{:id}                  Get a User
-GET /users/{:id}/posts              Get Posts from users
-GET /users/{:id}/followers          Get Followers of user
-GET /users/{:id}/following          Get following of a user
+✓ GET /users/{:id}/posts            Get Posts from users
+✓ GET /users/{:id}/followers        Get Followers of user
+✓ GET /users/{:id}/following        Get following of a user
 ✓ POST /users                       Register
-POST /users/{:id}/follow            Follow User
-POST /users/{:id}/unfollow          Unfollow User
+✓ POST /users/{:id}/follow          Follow User
 PATCH /users/{:id}                  Update a User
-DELETE /users/{:id}                 Delete a User
+✓ DELETE /users/{:id}/follow        Unfollow User
+✓ DELETE /users/{:id}               Delete a User
 
-GET /posts                          Get all posts
-GET /posts/{:id}                    Get a posts
+✓ GET /posts                        Get all posts
+✓ GET /posts/{:id}                  Get a posts
 POST /posts                         Create a posts
 PATCH /posts/{:id}                  Update a posts
-DELETE /posts/{:id}                 Delete a Post
+✓ DELETE /posts/{:id}               Delete a Post

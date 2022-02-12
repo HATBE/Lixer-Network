@@ -75,4 +75,13 @@
             $response->send();
             exit;
         }
+
+        public static function _404PageNotFound() {
+            $response = new JsonResponse();
+            $response->setHttpStatusCode(404);
+            $response->setSuccess(false);
+            $response->addMessage("Page not found");
+            $response->send();
+            exit;
+        }
     }

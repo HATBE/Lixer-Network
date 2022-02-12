@@ -6,8 +6,16 @@
     use app\Sanitize;
 
     class User extends Model{
-        public static function isAuthorized($token) {
-            return false;
+        public static function isAuthorized($db, $token) {
+            $db->query('SELECT * FROM sessions WHERE accesstoken LIKE :token;');
+            $db->bind('token', $token);
+            $res = $db->single();
+
+            if($db->rowCount() <= 0) return false;
+
+            if($res->accesstokenexpiry - time() <= 0) return false;
+
+            return $res->user_id;
         }
 
         public static function usernameExists($db, $username) {
@@ -49,6 +57,15 @@
             }
         }
 
+        public function getAsArray() {
+            $array = [
+                'user_id' => $this->getId(),
+                'username' => $this->getUsername(),
+                'joinTime' => $this->getJoinTimeUnix()
+            ];
+            return $array;
+        }
+
         public function getId() {
             return $this->getData('id');
         }
@@ -57,8 +74,24 @@
             return $this->getData('username');
         }
 
+        public function getJoinTime() {
+            return date('d.m.Y H:i', $this->getData('joinTime'));
+        }
+
+        public function getJoinTimeUnix() {
+            return $this->getData('joinTime');
+        }
+
         public function verifyPassword($pw) {
             return password_verify($pw, $this->getData('password'));
+        }
+
+        public function isFollowing($user) {
+            $this->_db->query('SELECT COUNT(id) as c FROM following WHERE source_user_id LIKE :source AND target_user_id LIKE :target;');
+            $this->_db->bind('source', $this->getId());
+            $this->_db->bind('target', $user->getId());
+            $res = $this->_db->single()->c;
+            return $res >= 1 ? true : false;
         }
 
     }
