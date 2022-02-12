@@ -21,7 +21,7 @@
             Notifications
         </ul>
     </span>
-    <span class="rounded-circle bg-light mx-1 dropdown border border-1 border-dark">
+    <span class="rounded-circle mx-1 dropdown">
         <div style="height: 28px; width: 28px; font-size: 0;" title="User menu" class="cursor-pointer overflow-hidden" data-bs-toggle="dropdown" aria-expanded="false"><?= Template::load('user/avatar', ['user' => $loggedInUser]);?></div>
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="<?= ROOT_PATH?>dashboard"><span style="display: inline-block;width: 23px;"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a></li>

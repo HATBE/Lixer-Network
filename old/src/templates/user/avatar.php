@@ -1,0 +1,1 @@
+<img draggable="false" class="border border-1 border-dark bg-light user-select-none rounded-circle" src="<?= $user->getAvatarPath();?>" alt="">

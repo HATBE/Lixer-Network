@@ -4,7 +4,7 @@
 <h2 class="h4 fw-bold my-4 user-select-none">Text Post</h2>
 <div class="user-select-none col-5 col-md-2 text-center md-none">
     <?= Template::load('user/avatar', ['user' => $loggedInUser]);?>
-    <div class="fw-bold h5 mt-2"><?= $loggedInUser->getUsername();?></div>
+    <?= Template::load('user/usernameLink', ['user' => $loggedInUser])?>
 </div>
 <div class="col-12 col-md-10">
     <div class="alert d-none" id="create-alert"></div>

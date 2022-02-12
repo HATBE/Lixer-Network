@@ -1,4 +1,4 @@
-const rootPath = "/lixer/public/";
+const rootPath = "/lixer/old/public/";
 
 function addMessageToAlert(alertName, messages, cclass = 'danger') {
     const alertEl = document.getElementById(alertName);

@@ -17,7 +17,7 @@
 
     <section class="container">
     <div class="row d-flex justify-content-center overflow-hidden">
-        <div class="col-12 col-md-7 row d-flex justify-content-center ">
+        <div class="col-12 col-md-7 row d-flex justify-content-center">
             <?php if($card == 'text'): ?>
                 <?= Template::load('forms/create-text', ['loggedInUser' => $loggedInUser]);?>
             <?php elseif($card == 'video'): ?>

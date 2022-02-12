@@ -98,10 +98,6 @@
             return $this->getData('id');
         }
 
-        public function getUid() {
-            return $this->getData('uid');
-        }
-
         public function getUsername() {
             return $this->getData('username');
         }
