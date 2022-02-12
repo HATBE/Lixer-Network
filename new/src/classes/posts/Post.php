@@ -30,6 +30,7 @@
         public function getAsArray() {
             $array = [
                 'post_id' => $this->getId(),
+                'type' => $this->getType(),
                 'username' => $this->getUser()->getUsername(),
                 'text' => $this->getText(),
                 'time' => $this->getTimeUnix()
@@ -55,5 +56,15 @@
 
         public function getTimeUnix() {
             return $this->getData('time');
+        }
+
+        public function getType() {
+            $typeid = $this->getData('type_id');
+
+            $this->_db->query('SELECT name FROM post_types WHERE id LIKE :id;');
+            $this->_db->bind('id', $typeid);
+            $type = $this->_db->single()->name;
+
+            return $type;
         }
     }

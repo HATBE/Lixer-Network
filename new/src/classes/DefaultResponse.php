@@ -84,4 +84,13 @@
             $response->send();
             exit;
         }
+
+        public static function _404NoItemsFound($item = 'items') {
+            $response = new JsonResponse();
+            $response->setHttpStatusCode(404);
+            $response->setSuccess(false);
+            $response->addMessage("No {$item} found");
+            $response->send();
+            exit;
+        }
     }

@@ -12,8 +12,8 @@
             $response = new JsonResponse();
             $response->setHttpStatusCode(400);
             $response->setSuccess(false);
-            $response->addMessage('A valid sessionid must be provided');
-            $response->send();
+            $response->addMessage('A valid userid must be provided');
+            $response->send(); 
             exit;
         }
 
@@ -124,6 +124,10 @@
                     $db->bind('id', $user->getId());
                     $usersCount = $db->single()->c;
 
+                    if($usersCount <= 0) {
+                        DefaultResponse::_404NoItemsFound('users');
+                    }
+
                     $maxPages = ceil($usersCount / $itemsPerPage);
 
                     if($page > $maxPages || $page <= 0) {
@@ -167,6 +171,10 @@
                     $db->bind('id', $user->getId());
                     $usersCount = $db->single()->c;
 
+                    if($usersCount <= 0) {
+                        DefaultResponse::_404NoItemsFound('users');
+                    }
+
                     $maxPages = ceil($usersCount / $itemsPerPage);
 
                     if($page > $maxPages || $page <= 0) {
@@ -209,6 +217,10 @@
                     $db->query('SELECT COUNT(id) as c FROM posts WHERE user_id LIKE :id;');
                     $db->bind('id', $user->getId());
                     $postsCount = $db->single()->c;
+
+                    if($postsCount <= 0) {
+                        DefaultResponse::_404NoItemsFound('post');
+                    }
 
                     $maxPages = ceil($postsCount / $itemsPerPage);
 
@@ -301,15 +313,6 @@
                 $db->query('DELETE FROM users WHERE id LIKE :id;');
                 $db->bind('id', $userFromToken->getId());
                 $db->execute();
-
-                if($db->rowCount() <= 0) {
-                    $response = new JsonResponse();
-                    $response->setHttpStatusCode(500);
-                    $response->setSuccess(false);
-                    $response->addMessage('Error qhile deleting user');
-                    $response->send();
-                    exit;
-                }
                 
                 $response = new JsonResponse();
                 $response->setHttpStatusCode(200);
@@ -326,6 +329,10 @@
             // get all users
             $db->query('SELECT COUNT(id) as c FROM users;');
             $usersCount = $db->single()->c;
+
+            if($usersCount <= 0) {
+                DefaultResponse::_404NoItemsFound('users');
+            }
 
             $maxPages = ceil($usersCount / $itemsPerPage);
 
@@ -364,6 +371,7 @@
             if(!isset($_SERVER['CONTENT_TYPE']) || $_SERVER['CONTENT_TYPE'] !== 'application/json') {
                 DefaultResponse::_400NotJson();
             }
+
             $rawPostData = file_get_contents('php://input');
 
             if(!$jsonData = json_decode($rawPostData)) {
@@ -379,8 +387,12 @@
                 exit;
             }
 
-            if(!Sanitize::checkStringBetween($jsonData->username, 1, 255) || !Sanitize::checkStringBetween($jsonData->password, 1, 255)) {
-                DefaultResponse::_400OverLengthString('1-255');
+            if(!Sanitize::checkStringBetween($jsonData->username, 3, 16) || !Sanitize::checkStringBetween($jsonData->password, 3, 16)) {
+                DefaultResponse::_400OverLengthString('3-255');
+            }
+
+            if(!preg_match('/^[a-zA-Z0-9-_]{3,16}$/', $jsonData->username)) {
+                DefaultResponse::_400OverLengthString('3-255');
             }
 
             $username = Sanitize::string($jsonData->username);
@@ -397,7 +409,8 @@
 
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $db->query('INSERT INTO users (username, password) VALUES (:username, :password);');
+            $db->query('INSERT INTO users (username, password, joinTime) VALUES (:username, :password, :time);');
+            $db->bind('time', time());
             $db->bind('username', $username);
             $db->bind('password', $hashedPassword);
             $db->execute();
@@ -418,7 +431,7 @@
             $rData['username'] = $username;
 
             $response = new JsonResponse();
-            $response->setHttpStatusCode(200);
+            $response->setHttpStatusCode(201);
             $response->setSuccess(true);
             $response->setData($rData);
             $response->send();
