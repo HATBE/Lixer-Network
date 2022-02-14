@@ -5,9 +5,25 @@
 
     use app\Database;
     use app\Sanitize;
+    use app\JsonResponse;
+
+    // CORS SETTINGS
+    if($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        header('Access-Control-Allow-Methods: POST, DELETE, GET, PATCH, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Max-Age: 86400');
+        header('Access-Control-Allow-Origin: *');
+        
+        $response = new JsonResponse();
+        $response->setHttpStatusCode(200);
+        $response->setSuccess(true);
+        $response->send();
+        exit;
+    }
 
     $db = new Database();
 
+    // URL Params
     $url = null;
     if(isset($_SERVER['PATH_INFO'])) {
         $url = rtrim($_SERVER['PATH_INFO'], '/'); // remove last slash
@@ -18,5 +34,6 @@
         if(empty($url) || $url[0] == '') $url = '';
     }
 
+    // DEFAULT VARS
     $itemsPerPage = ITEMS_PER_PAGE;
     $page = isset($_GET['page']) ? Sanitize::int($_GET['page']) : 1;

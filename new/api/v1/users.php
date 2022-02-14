@@ -8,6 +8,57 @@
     use app\posts\Post;
 
     if(isset($url[0])) {
+        if($url[0] === 'search') {
+            // Search a user
+            if(!isset($url[1])) {
+                DefaultResponse::_404NoItemsFound('users');
+            }
+
+            $query = Sanitize::string($url[1]);
+
+            $db->query("SELECT COUNT(id) as c FROM users WHERE username LIKE CONCAT('%', :query, '%');");
+            $db->bind('query', $query);
+            $usersCount = $db->single()->c;
+
+            if($usersCount <= 0) {
+                DefaultResponse::_404NoItemsFound('users');
+            }
+
+            $maxPages = ceil($usersCount / $itemsPerPage);
+
+            if($page > $maxPages || $page <= 0) {
+                DefaultResponse::_404PageNotFound();
+            }
+
+            $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+
+            $db->query("SELECT * FROM users WHERE username LIKE CONCAT('%', :query, '%') LIMIT :limit OFFSET :offset;");
+            $db->bind('query', $query);
+            $db->bind('limit', $itemsPerPage);
+            $db->bind('offset', $offset);
+            $res = $db->resultSet();
+
+            $rData = [];
+
+            $rData['rows_returned'] = $db->rowCount();
+            $rData['total_rows'] = intval($usersCount);
+            $rData['total_pages'] = $maxPages;
+            $rData['has_next_page'] = $page >= $maxPages ? false : true;
+            $rData['has_last_page'] = $page >= 2 ? true : false;
+
+            foreach($res as $idx=>$user) {
+               $userO = new User($db, $user->id);
+               $rData['users'][$idx] = $userO->getAsArray();
+            }
+
+            $response = new JsonResponse();
+            $response->setHttpStatusCode(200);
+            $response->setSuccess(true);
+            $response->setData($rData);
+            $response->send();
+            exit;
+        }
+
         if(!Sanitize::checkInt($url[0])) {
             $response = new JsonResponse();
             $response->setHttpStatusCode(400);
@@ -134,7 +185,7 @@
                         DefaultResponse::_404PageNotFound();
                     }
 
-                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+                    $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
         
                     $db->query('SELECT * FROM following WHERE target_user_id LIKE :id LIMIT :limit OFFSET :offset;');
                     $db->bind('id', $user->getId());
@@ -181,7 +232,7 @@
                         DefaultResponse::_404PageNotFound();
                     }
 
-                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+                    $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
         
                     $db->query('SELECT * FROM following WHERE source_user_id LIKE :id LIMIT :limit OFFSET :offset;');
                     $db->bind('id', $user->getId());
@@ -228,7 +279,7 @@
                         DefaultResponse::_404PageNotFound();
                     }
 
-                    $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+                    $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
         
                     $db->query('SELECT * FROM posts WHERE user_id LIKE :id LIMIT :limit OFFSET :offset;');
                     $db->bind('id', $user->getId());
@@ -340,7 +391,7 @@
                 DefaultResponse::_404PageNotFound();
             }
 
-            $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+            $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
 
             $db->query('SELECT * FROM users LIMIT :limit OFFSET :offset;');
             $db->bind('limit', $itemsPerPage);

@@ -8,6 +8,57 @@
     use app\Sanitize;
 
     if(isset($url[0])) {
+        if($url[0] === 'search') {
+            // Search a post
+            if(!isset($url[1])) {
+                DefaultResponse::_404NoItemsFound('posts');
+            }
+
+            $query = Sanitize::string($url[1]);
+
+            $db->query("SELECT COUNT(id) as c FROM posts WHERE text LIKE CONCAT('%', :query, '%');");
+            $db->bind('query', $query);
+            $postsCount = $db->single()->c;
+
+            if($postsCount <= 0) {
+                DefaultResponse::_404NoItemsFound('posts');
+            }
+
+            $maxPages = ceil($postsCount / $itemsPerPage);
+
+            if($page > $maxPages || $page <= 0) {
+                DefaultResponse::_404PageNotFound();
+            }
+
+            $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
+
+            $db->query("SELECT * FROM posts WHERE text LIKE CONCAT('%', :query, '%') LIMIT :limit OFFSET :offset;");
+            $db->bind('query', $query);
+            $db->bind('limit', $itemsPerPage);
+            $db->bind('offset', $offset);
+            $res = $db->resultSet();
+
+            $rData = [];
+
+            $rData['rows_returned'] = $db->rowCount();
+            $rData['total_rows'] = intval($postsCount);
+            $rData['total_pages'] = $maxPages;
+            $rData['has_next_page'] = $page >= $maxPages ? false : true;
+            $rData['has_last_page'] = $page >= 2 ? true : false;
+
+            foreach($res as $idx=>$post) {
+                $postO = new Post($db, $post->id);
+                $rData['posts'][$idx] = $postO->getAsArray();
+             }
+ 
+             $response = new JsonResponse();
+             $response->setHttpStatusCode(200);
+             $response->setSuccess(true);
+             $response->setData($rData);
+             $response->send();
+             exit;
+        }
+
         if(!Sanitize::checkInt($url[0])) {
             $response = new JsonResponse();
             $response->setHttpStatusCode(400);
@@ -152,7 +203,7 @@
                 DefaultResponse::_404PageNotFound();
             }
 
-            $offset = ($page == 1 ?  0 : ($itemsPerPage*($page-1)));
+            $offset = ($page == 1 ? 0 : ($itemsPerPage*($page-1)));
 
             $db->query('SELECT * FROM posts LIMIT :limit OFFSET :offset;');
             $db->bind('limit', $itemsPerPage);
