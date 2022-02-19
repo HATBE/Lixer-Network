@@ -133,9 +133,9 @@
             $rData = [];
             $rData['session_id'] = $rSessionId;
             $rData['access_token'] = $accesstoken;
-            $rData['access_token_expires_in'] = $accesstokenExpiryDate;
+            $rData['access_token_expires_in'] = $accesstokenExpiry;
             $rData['refresh_token'] = $refreshtoken;
-            $rData['refresh_token_expires_in'] = $refreshtokenExpiryDate;
+            $rData['refresh_token_expires_in'] = $refreshtokenExpiry;
 
             $response = new JsonResponse();
             $response->setHttpStatusCode(201);

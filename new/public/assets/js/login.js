@@ -5,12 +5,18 @@ class Login {
         if(this.loginFormEl) {
             this.loginFormEl.addEventListener('submit', this._login.bind(this));
         }
+
+        if(app._isLoggedIn) {
+            alert('ok');
+            this.loginFormContainerEl.classList.add('hidden');
+        }
     }
 
     _loadDOMEls() {
         this.loginFormEl = document.getElementById('form-login');
         this.usernameEl = document.getElementById('form-login--username');
         this.passwordEl = document.getElementById('form-login--password');
+        this.loginFormContainerEl = document.getElementById('login-form-container');
     }
 
     _login(e) {

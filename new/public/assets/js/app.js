@@ -12,10 +12,22 @@ class App {
         let domEl = new DOMEl(this.#headerEl, this.#footerEl);
     }
 
+    _isLoggedIn() {
+        const data = JSON.parse(this._getLocalStorage('login-data'));
+
+        console.log(data);
+        
+        if(!data) {
+            return false;
+        }
+        return true;
+    }
+
     _checkLoggedIn() {
         const date = Math.round((new Date()).getTime() / 1000);
 
         const data = JSON.parse(this._getLocalStorage('login-data'));
+        
         if(!data) {
             return;
         }
@@ -47,6 +59,7 @@ class App {
         }
 
         if(data.refreshTokenExpiry - date <= 180) {
+            this._removeFromLocalStorage('login-data');
             alert("logout, token not available");
         }
     }
@@ -62,6 +75,10 @@ class App {
 
     _setLocalStorage(name, data) {
         localStorage.setItem(name, data);
+    }
+
+    _removeFromLocalStorage(name) {
+        localStorage.removeItem(name);
     }
 }
 
