@@ -8,23 +8,46 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Login</title>
 </head>
-<body>
+<body class="bg-primary">
     <header></header>
 
-    <div class="container login-form-container">
-        <h2>Login</h2>
-        <form id="form-login">
-            <div class="mb-3">
-                <input class="form-control" type="text" id="form-login--username" placeholder="username">
+    <main id="main-content" class="bg-light py-4 px-3">
+        <section class="container">
+            <div class="row d-flex justify-content-center overflow-hidden">
+                <div class="md-none p-0 col-12 col-sm-6 col-md-5 col-lg-4 bg-primary text-light d-flex justify-content-center align-items-center rounded overflow-hidden">
+                    <img draggable="false" class="img-filter-darken position-relative object-fit-cover w-100 h-100" src="assets/img/network.png" alt="">
+                    <span class="user-select-none position-absolute h1">Welcome to Lixer</span>
+                </div>
+                <div class="col-12  col-sm-7 col-md-6 col-lg-5 my-5">
+                    <h2 class="h4 fw-bold my-4">LOGIN</h2>
+                    <div class="alert d-none" id="login-alert"></div>
+                    <form id="form-login">
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-lg" id="form-login--username" name="username" type="text" placeholder="Username">
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input class="form-control form-control-lg" id="form-login--password" name="password" type="password" placeholder="Password">
+                            <label for="password">Password</label>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Login</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted"><a class="link-dark text-decoration-none" href="forgot-password">Forgot password?</a></small>
+                    </div>
+                    <div class="text-center mt-3 d-flex flex-column justify-content-center">
+                        <span>Don't have an account?</span>
+                        <a class="w-100" href="register">
+                            <button class="text-decoration-none btn btn-outline-primary my-2 fw-bold btn-sm w-100" type="button">CREATE ONE</button>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <input class="form-control" type="password" id="form-login--password" placeholder="password">
-            </div>
-            <button class="btn btn-primary">Login</button>
-        </form>
-    </div>
+        </section>
+    </main>
 
     <footer></footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="assets/js/app.js"></script>

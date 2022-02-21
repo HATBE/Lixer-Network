@@ -6,9 +6,8 @@ class Login {
             this.loginFormEl.addEventListener('submit', this._login.bind(this));
         }
 
-        if(app._isLoggedIn) {
-            alert('ok');
-            this.loginFormContainerEl.classList.add('hidden');
+        if(app._isLoggedIn()) {
+            window.location.href = "index";
         }
     }
 
@@ -16,7 +15,6 @@ class Login {
         this.loginFormEl = document.getElementById('form-login');
         this.usernameEl = document.getElementById('form-login--username');
         this.passwordEl = document.getElementById('form-login--password');
-        this.loginFormContainerEl = document.getElementById('login-form-container');
     }
 
     _login(e) {
@@ -26,7 +24,7 @@ class Login {
         let password = this.passwordEl.value;
 
         if(!username || !password) {
-            alert('Pleae enter data');
+            app._addMessageToAlert('login-alert', ['Please enter data.'], 'danger');
             return;
         }
 
@@ -47,10 +45,11 @@ class Login {
             }
 
             app._setLocalStorage('login-data', JSON.stringify(toSave));
-            alert('success');
+            app._addMessageToAlert('login-alert', ['succcessfully loggedin'], 'success');
+            setTimeout(() => {window.location.href = "index"}, 750)
         })
         .fail(data => {
-            alert(JSON.parse(data.responseText).messages[0]);
+            app._addMessageToAlert('login-alert', JSON.parse(data.responseText).messages, 'danger');
         });
     }
 }
