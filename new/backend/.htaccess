@@ -1,0 +1,5 @@
+# Rewrite every request from /api/? to /api/v(latest)/?
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ ./api/v1/$1 [L]
+</IfModule>

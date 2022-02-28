@@ -2,6 +2,9 @@
     namespace app;
 
     class Sanitize {
+
+        // \/ sanitize stuff \/
+
         public static function int($input) {
             $r = htmlentities($input, ENT_QUOTES);
             $r = filter_var($r, FILTER_SANITIZE_NUMBER_INT);
@@ -23,8 +26,24 @@
             return $r;
         }
 
+        public static function url($input) {
+            $r = htmlspecialchars(filter_var($input, FILTER_SANITIZE_URL));
+
+            return $r;
+        }
+
+        // /\ sanitize stuff /\
+        // \/ boolean stuff \/
+
         public static function checkInt($int) {
             if($int != '' && is_numeric($int)) {
+                return true;
+            }
+            return false;
+        }
+
+        public static function checkString($str) {
+            if($str != '' && is_string($str)) {
                 return true;
             }
             return false;
@@ -36,5 +55,7 @@
             }
             return false;
         }
+
+        // /\ boolean stuff /\
     }
 

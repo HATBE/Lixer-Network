@@ -1,7 +1,7 @@
 <?php
-    namespace app;
+    namespace app\io;
 
-    use app\JsonResponse;
+    use app\io\JsonResponse;
 
     class DefaultResponse {
         public static function _404EndpointNotFound() {
@@ -48,30 +48,30 @@
             $response->send();
             exit;
         }
-
-        public static function _400OverLengthString($lstr = '1-100') {
+        
+        public static function _400NotProvidedASearchQuery() {
             $response = new JsonResponse();
             $response->setHttpStatusCode(400);
             $response->setSuccess(false);
-            $response->addMessage("There is a string length from {$lstr}");
+            $response->addMessage('Please provide a search query (?q=%term%)');
             $response->send();
             exit;
         }
 
-        public static function _401UnameOrPwdNotValid() {
-            $response = new JsonResponse();
-            $response->setHttpStatusCode(401);
-            $response->setSuccess(false);
-            $response->addMessage("Username or password invalid");
-            $response->send();
-            exit;
-        }
-
-        public static function _404NotFound($what = '') {
+        public static function _404NoItemsFound($items = 'items') {
             $response = new JsonResponse();
             $response->setHttpStatusCode(404);
             $response->setSuccess(false);
-            $response->addMessage("{$what} Not found");
+            $response->addMessage("No {$items} found");
+            $response->send();
+            exit;
+        }
+
+        public static function _404ItemNotFound($item = 'item') {
+            $response = new JsonResponse();
+            $response->setHttpStatusCode(404);
+            $response->setSuccess(false);
+            $response->addMessage("{$item} not found");
             $response->send();
             exit;
         }
@@ -85,11 +85,20 @@
             exit;
         }
 
-        public static function _404NoItemsFound($item = 'items') {
+        public static function _400WrongLengthString($lstr = '1-100') {
             $response = new JsonResponse();
-            $response->setHttpStatusCode(404);
+            $response->setHttpStatusCode(400);
             $response->setSuccess(false);
-            $response->addMessage("No {$item} found");
+            $response->addMessage("There is a string length from {$lstr}");
+            $response->send();
+            exit;
+        }
+
+        public static function _400WrongFormatString($format = 'A-Za-z0-9') {
+            $response = new JsonResponse();
+            $response->setHttpStatusCode(400);
+            $response->setSuccess(false);
+            $response->addMessage("String is malformed, please use following format: {$format}");
             $response->send();
             exit;
         }

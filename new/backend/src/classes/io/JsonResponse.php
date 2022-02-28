@@ -1,5 +1,5 @@
 <?php
-    namespace app;
+    namespace app\io;
 
     class JsonResponse {
         private $_success;

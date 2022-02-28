@@ -1,12 +1,27 @@
 <?php
     namespace app\posts;
 
-    use app\Database;
+    use app\io\Database;
     use app\Model;
     use app\Sanitize;
     use app\users\User;
 
-    class Post extends Model{
+    class Post extends Model {
+        public static function getFromUid(Database $db, $uid) {
+            $db->query('SELECT * FROM posts WHERE uid LIKE :uid;');
+            $db->bind('uid', $uid);
+            $res = $db->single();
+
+            return $db->rowCount() >= 1 ? new Post($db, $res) : null;
+        }
+
+        public static function uidExists(Database $db, string $uid) {
+            $db->query('SELECT COUNT(id) as c FROM posts WHERE uid LIKE :uid;');
+            $db->bind('uid', $uid);
+
+            return $db->single()->c >= 1 ? true : false;
+        }
+        
         public function __construct(Database $db, $input) {
             $this->_db = $db;
 
@@ -29,17 +44,21 @@
 
         public function getAsArray() {
             $array = [
-                'post_id' => $this->getId(),
+                'post_id' => $this->getUid(),
                 'type' => $this->getType(),
                 'username' => $this->getUser()->getUsername(),
                 'text' => $this->getText(),
-                'time' => $this->getTimeUnix()
+                'time' => intval($this->getTime())
             ];
             return $array;
         }
 
         public function getId() {
             return $this->getData('id');
+        }
+
+        public function getUid() {
+            return $this->getData('uid');
         }
 
         public function getText() {
@@ -50,11 +69,11 @@
             return new User($this->_db, $this->getData('user_id'));
         }
 
-        public function getTime() {
-            return date('d.m.Y H:i', $this->getData('time'));
+        public function getTimeFormatted($format = 'd.m.Y H:i') {
+            return date($format, $this->getData('time'));
         }
 
-        public function getTimeUnix() {
+        public function getTime() {
             return $this->getData('time');
         }
 
