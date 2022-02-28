@@ -1,1 +1,0 @@
-<button id="followbtn" data-user="<?= $target;?>" data-following="<?= $loggedInUser->isFollowing($target) ? 'true' : 'false';?>" class="mx-2-2 btn btn-<?= $loggedInUser->isFollowing($target) ? 'danger' : 'primary';?>"><?= $loggedInUser->isFollowing($target) ? 'Unfollow' : 'Follow';?></button>
