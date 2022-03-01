@@ -8,7 +8,7 @@
     use app\users\User;
 
     if(isset($_url[0])) {
-        if(!Sanitize::checkInt($_url[0])) {
+        if(!Sanitize::checkString($_url[0])) {
             $response = new JsonResponse();
             $response->setHttpStatusCode(400);
             $response->setSuccess(false);
@@ -26,7 +26,7 @@
 
         if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
             // == logout
-            $_db->query('DELETE FROM sessions WHERE id LIKE :sessionid AND accesstoken LIKE :accesstoken;');
+            $_db->query('DELETE FROM sessions WHERE uid LIKE :sessionid AND accesstoken LIKE :accesstoken;');
             $_db->bind('sessionid', $_sessionId);
             $_db->bind('accesstoken', $_accesstoken);
             $_db->execute();
@@ -72,7 +72,7 @@
 
             $refreshtoken = $jsonData->refreshtoken;
 
-            $_db->query('SELECT * FROM sessions WHERE id LIKE :sessionid AND accesstoken LIKE :accesstoken AND refreshtoken LIKE :refreshtoken;');
+            $_db->query('SELECT * FROM sessions WHERE uid LIKE :sessionid AND accesstoken LIKE :accesstoken AND refreshtoken LIKE :refreshtoken;');
             $_db->bind('sessionid', $_sessionId);
             $_db->bind('accesstoken', $_accesstoken);
             $_db->bind('refreshtoken', $refreshtoken);
@@ -105,12 +105,12 @@
             $accesstokenExpiryDate = time() + $accesstokenExpiry;
             $refreshtokenExpiryDate = time() + $refreshtokenExpiry;
 
-            $rUserId = $res->userid;
-            $rSessionId = $res->sessionid;
+            $rUserId = $res->user_id;
+            $rSessionId = $res->uid;
             $rRefreshtoken = $res->refreshtoken;
             $rAccesstoken = $res->accesstoken;
 
-            $_db->query('UPDATE sessions SET accesstoken = :accesstoken, accesstokenexpiry = :accesstokenexpiry, refreshtoken = :refreshtoken, refreshtokenexpiry = :refreshtokenexpiry WHERE id LIKE :sessionid AND user_id LIKE :userid AND accesstoken LIKE :rAccesstoken AND refreshtoken LIKE :rRefreshtoken;');
+            $_db->query('UPDATE sessions SET accesstoken = :accesstoken, accesstokenexpiry = :accesstokenexpiry, refreshtoken = :refreshtoken, refreshtokenexpiry = :refreshtokenexpiry WHERE uid LIKE :sessionid AND user_id LIKE :userid AND accesstoken LIKE :rAccesstoken AND refreshtoken LIKE :rRefreshtoken;');
             $_db->bind('accesstoken', $accesstoken);
             $_db->bind('accesstokenexpiry', $accesstokenExpiryDate);
             $_db->bind('refreshtoken', $refreshtoken);

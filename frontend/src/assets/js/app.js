@@ -1,5 +1,5 @@
-const apiPath = '/api/v1/';
-const rootPath = '/';
+const apiPath = '/new/backend/api/v1/';
+const rootPath = '/new/frontend/';
 
 class App {
     headerEl;
@@ -18,6 +18,22 @@ class App {
     }
 
     _logout() {
+        let data = JSON.parse(this._getLocalStorage('login-data'));
+
+        $.ajax({
+            type: 'DELETE', 
+            url: `${apiPath}sessions/${data.sessionId}`, 
+            data: JSON.stringify({refreshtoken: data.refreshToken}),
+            headers: {
+                Authorization: data.accessToken
+            }
+        })
+        .done(data => {
+            
+        })
+        .fail(data => {
+            alert("Failed to Logout");
+        });
         this._removeFromLocalStorage('login-data');
         window.location.href = 'index';
     }
@@ -62,7 +78,8 @@ class App {
                 app._setLocalStorage('login-data', JSON.stringify(toSave));
             })
             .fail(data => {
-                alert(JSON.parse(data.responseText).messages[0]);
+                alert("Your session has expired");
+                this._logout();
             });
         }
 
@@ -78,7 +95,7 @@ class App {
         if(alertEl) {
             alertEl.textContent = '';
             alertEl.classList.remove('d-none', 'alert-danger', 'alert-success');
-            alertEl.classList.add(`alert-${cclass}`)
+            alertEl.classList.add(`alert-${cclass}`);
             messages.forEach((msg) => {
                 alertEl.textContent += msg;
             });
