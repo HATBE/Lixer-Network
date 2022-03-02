@@ -2,13 +2,8 @@ class Login {
     constructor() {
         this._loadDOMEls();
 
-        if(this.loginFormEl) {
-            this.loginFormEl.addEventListener('submit', this._login.bind(this));
-        }
-
-        if(app._isLoggedIn()) {
-            window.location.href = "index";
-        }
+        if(this.loginFormEl) this.loginFormEl.addEventListener('submit', this._login.bind(this));
+        if(app._isLoggedIn()) window.location.href = "index";
     }
 
     _loadDOMEls() {
@@ -37,7 +32,8 @@ class Login {
         .done(data => {
             const date = Math.round((new Date()).getTime() / 1000);
             const toSave = {
-                sessionId: data.data.session_id, 
+                sessionId: data.data.session_id,
+                username: data.data.username, 
                 accessToken: data.data.access_token, 
                 accessTokenExpiry: date + data.data.access_token_expires_in, 
                 refreshToken: data.data.refresh_token, 

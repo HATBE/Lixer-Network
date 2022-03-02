@@ -28,9 +28,6 @@ class App {
                 Authorization: data.accessToken
             }
         })
-        .done(data => {
-            
-        })
         .fail(data => {
             alert("Failed to Logout");
         });
@@ -68,7 +65,8 @@ class App {
             })
             .done(data => {
                 const toSave = {
-                    sessionId: data.data.session_id, 
+                    sessionId: data.data.session_id,
+                    username: data.data.username, 
                     accessToken: data.data.access_token, 
                     accessTokenExpiry: date + data.data.access_token_expires_in, 
                     refreshToken: data.data.refresh_token, 
@@ -139,26 +137,32 @@ class DOMEl {
         `;
 
         if(app._isLoggedIn()) {
+
+            const data = JSON.parse(app._getLocalStorage('login-data'));
+            let username = data.username;
+
             headerHTML += `
                         <span class="mx-3 dropdown">
                             <div title="Add" class="cursor-pointer link-light hover-text-light" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-plus-circle"></i></div>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="${rootPath}create/text"><span style="display: inline-block;width: 23px;"><i class="fas fa-align-left"></i></span> Text Post</a></li>
-                                <li><a class="dropdown-item" href="${rootPath}create/video"><span style="display: inline-block;width: 23px;"><i class="fas fa-video"></i></span> Uplaod Video</a></li>
-                                <li><a class="dropdown-item" href="${rootPath}create/image"><span style="display: inline-block;width: 23px;"><i class="fas fa-image"></i></span> Upload Image</a></li>
+                                <li><a class="dropdown-item" href="${rootPath}create#text"><span style="display: inline-block;width: 23px;"><i class="fas fa-align-left"></i></span> Text Post</a></li>
+                                <!--<li><a class="dropdown-item" href="${rootPath}create/video"><span style="display: inline-block;width: 23px;"><i class="fas fa-video"></i></span> Uplaod Video</a></li>
+                                <li><a class="dropdown-item" href="${rootPath}create/image"><span style="display: inline-block;width: 23px;"><i class="fas fa-image"></i></span> Upload Image</a></li>-->
                             </ul>
                         </span>
-                        <a title="Chat" class="mx-3 link-light hover-text-light" href="${rootPath}chat"><i class="fas fa-comment"></i></a>
+                        <!--<a title="Chat" class="mx-3 link-light hover-text-light" href="${rootPath}chat"><i class="fas fa-comment"></i></a>
                         <span class="mx-3 dropdown">
                             <div title="Notifications" class="position-relative cursor-pointer link-light hover-text-light" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-bell"></i></div>
                             <small style="font-size: 10px; top:0px; right: -5px; width: 15px; height: 15px;" class="position-absolute bg-danger rounded-circle d-flex justify-content-center align-items-center">9+</small>
                             <ul class="dropdown-menu">
                                 Notifications
                             </ul>
-                        </span>
+                        </span>-->
                         <span class="rounded-circle mx-3 dropdown">
-                            <div style="height: 28px; width: 28px; font-size: 0;" title="User menu" class="cursor-pointer overflow-hidden" data-bs-toggle="dropdown" aria-expanded="false"><img draggable="false" class="border border-1 border-dark bg-light user-select-none rounded-circle" src="${'https://avatars.dicebear.com/api/jdenticon/hatbe.svg'}" alt=""></div>
+                            <div style="height: 28px; width: 28px; font-size: 0;" title="User menu" class="cursor-pointer overflow-hidden" data-bs-toggle="dropdown" aria-expanded="false"><img draggable="false" class="border border-1 border-dark bg-light user-select-none rounded-circle" src="https://avatars.dicebear.com/api/jdenticon/${username}.svg" alt=""></div>
                             <ul class="dropdown-menu">
+                                <li class="text-center">${username}</li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="${rootPath}dashboard"><span style="display: inline-block;width: 23px;"><i class="fas fa-tachometer-alt"></i></span> Dashboard</a></li>
                                 <li><a class="dropdown-item" href="${rootPath}settings"><span style="display: inline-block;width: 23px;"><i class="fas fa-cog"></i></span> Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>

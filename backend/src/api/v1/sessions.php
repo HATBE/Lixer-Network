@@ -55,9 +55,9 @@
                 DefaultResponse::_400NotJson();
             }
 
-            $rawPatchData = file_get_contents('php://input');
+            $rawData = file_get_contents('php://input');
 
-            if(!$jsonData = json_decode($rawPatchData)) {
+            if(!$jsonData = json_decode($rawData)) {
                 DefaultResponse::_400NotValidJson();
             }
 
@@ -130,8 +130,12 @@
                 exit;
             }
 
+            $user = new User($_db, $rUserId);
+
             $rData = [];
             $rData['session_id'] = $rSessionId;
+            $rData['user_id'] = $rUserId;
+            $rData['username'] = $user->getUsername();
             $rData['access_token'] = $accesstoken;
             $rData['access_token_expires_in'] = $accesstokenExpiry;
             $rData['refresh_token'] = $refreshtoken;
@@ -155,9 +159,9 @@
                 DefaultResponse::_400NotJson();
             }
 
-            $rawPatchData = file_get_contents('php://input');
+            $rawData = file_get_contents('php://input');
 
-            if(!$jsonData = json_decode($rawPatchData)) {
+            if(!$jsonData = json_decode($rawData)) {
                 DefaultResponse::_400NotValidJson();
             }
 
@@ -230,6 +234,7 @@
             $rData = [];
             $rData['session_id'] = $uid;
             $rData['user_id'] = $user->getUid();
+            $rData['username'] = $user->getUsername();
             $rData['access_token'] = $accesstoken;
             $rData['access_token_expires_in'] = $accesstokenExpiry;
             $rData['refresh_token'] = $refreshtoken;
